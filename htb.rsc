@@ -3,7 +3,7 @@
 #
 
 :global lanInterface "bridge1"
-:global wanInterface "all ppp"
+:global wanInterface "all-ppp"
 
 /ip firewall mangle
     add action=mark-packet chain=prerouting comment="all download package" \
@@ -11,27 +11,27 @@
         passthrough=yes
     add action=mark-packet chain=prerouting comment="http download package" \
         in-interface=$wanInterface log-prefix="" new-packet-mark=http_download_pkg \
-        passthrough=yes protocol=tcp src-port=80,443
+        passthrough=yes protocol=tcp src-port="80,443"
     add action=mark-packet chain=prerouting comment="small download package" \
         in-interface=$wanInterface log-prefix="" new-packet-mark=small_download_pkg \
-        packet-size=0-383 passthrough=yes
+        packet-size="0-383" passthrough=yes
     add action=mark-packet chain=prerouting comment="p2p download package" \
         in-interface=$wanInterface log-prefix="" new-packet-mark=p2p_download_pkg \
-        packet-size=512-65535 passthrough=yes protocol=udp src-port=54-65535
+        packet-size="512-65535" passthrough=yes protocol=udp src-port="54-65535"
     add action=mark-packet chain=prerouting comment="all upload package" \
-        dst-address-type=!local in-interface=bridge1 log-prefix="" \
+        dst-address-type=!local in-interface=$lanInterface log-prefix="" \
         new-packet-mark=upload_pkg passthrough=yes
     add action=mark-packet chain=prerouting comment="http upload package" \
-        dst-address-type=!local dst-port=80,443 in-interface=bridge1 \
+        dst-address-type=!local dst-port="80,443" in-interface=$lanInterface \
         log-prefix="" new-packet-mark=http_upload_pkg passthrough=yes protocol=\
         tcp
     add action=mark-packet chain=prerouting comment="small upload package" \
-        dst-address-type=!local in-interface=bridge1 log-prefix="" \
-        new-packet-mark=small_upload_pkg packet-size=0-511 passthrough=yes
+        dst-address-type=!local in-interface=$lanInterface log-prefix="" \
+        new-packet-mark=small_upload_pkg packet-size="0-511" passthrough=yes
     add action=mark-packet chain=prerouting comment="p2p upload package" \
-        dst-address-type=!local in-interface=bridge1 log-prefix="" \
-        new-packet-mark=p2p_upload_pkg packet-size=512-65535 passthrough=yes \
-        protocol=udp src-port=54-65535
+        dst-address-type=!local in-interface=$lanInterface log-prefix="" \
+        new-packet-mark=p2p_upload_pkg packet-size="512-65535" passthrough=yes \
+        protocol=udp src-port="54-65535"
 
 
 /queue tree
