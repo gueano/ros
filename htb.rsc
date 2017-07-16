@@ -2,7 +2,7 @@
 # software id = F5YP-9KEI
 #
 
-:global lanInterface "bridge1"
+:global lanInterface "ether1"
 :global wanInterface "all-ppp"
 
 /ip firewall mangle
